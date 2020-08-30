@@ -2,19 +2,26 @@ const stage = new createjs.Stage("canvas");
 createjs.Ticker.timingMode = createjs.Ticker.RAF;
 createjs.Ticker.on("tick", tick);
 
-
 const people = ['A','Ja','E','Ra','H','Jos','V','Ju','L','Rh','T','Jon'];
-const colors = ['#F00','#FF7F00','#FF0','#7FFF00','#0F0','#00FF7F','#0FF','#007FFF','#00F','#7F00FF','#F0F','#FF007F'];
 const	diameter = 250;
+const STOPPED = 'STOPPED';
+const MOVING = 'MOVING';
+const STOPPING = 'STOPPING';
 
-// drawWheel(people, colors, diameter)
+const generateHexString = function (string) {
+  const foo = parseInt(people[index], 34);
+  const bar = Math.abs(Math.sin(foo));
+  return `#${Math.floor(bar * 16777215).toString(16)}`
+}
+
+// drawWheel(people, diameter)
 const wheel = new createjs.Container();
 const	wheelShape = new createjs.Shape();
 const segments = people.length;
 const	angle = Math.PI * 2 / segments;
 
 for (var index = 0, limit = segments; index < limit; index ++) {
-  wheelShape.graphics.beginFill(colors[index])
+  wheelShape.graphics.beginFill(generateHexString(people[index]))
     .moveTo(0, 0)
     .lineTo(Math.cos(angle * index) * diameter, Math.sin(angle * index ) * diameter)
 		.arc(0, 0, diameter, index * angle, index * angle + angle)
@@ -37,12 +44,11 @@ wheel.cache(-diameter, -diameter, diameter*2, diameter*2);
 wheel.rotation = -360/segments/2; // Rotate by 1/2 segment to align at 0
 // return wheel
 
-
 // drawNotch(notchX(wheel.x), notchY(wheel.y - diameter))
 const notch = new createjs.Shape();
 notch.x = wheel.x;
 notch.y = wheel.y - diameter;
-notch.graphics.beginFill("red").drawPolyStar(0, 0, 12, 3, 2, 90);
+notch.graphics.beginFill("linen").drawPolyStar(0, 0, 12, 3, 2, 90);
 //return notch
 
 // Where the wheel should land
@@ -54,10 +60,6 @@ notch.graphics.beginFill("red").drawPolyStar(0, 0, 12, 3, 2, 90);
 //   });
 
 stage.addChild(wheel, notch); // and , nextPerson
-
-const STOPPED = 'STOPPED';
-const MOVING = 'MOVING';
-const STOPPING = 'STOPPING';
 
 wheel.mode = STOPPED;
 
@@ -81,7 +83,6 @@ wheel.on("click", function() {
       .call(function() { wheel.mode = STOPPED; });
   }
 });
-
 
 function tick(event) {
 	if (wheel.mode == MOVING) {
