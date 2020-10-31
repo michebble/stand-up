@@ -1,7 +1,7 @@
-const generateHexString = function (string) {
-  const foo = parseInt(string, 34);
-  const bar = Math.abs(Math.sin(foo));
-  return `#${Math.floor(bar * 16777215).toString(16)}`
+const chooseColors = function (index) {
+  const colors = ['#005DFF', '#A200FF', '#FFA200', '#5DFF00'];
+  const colorIndex = index % colors.length;
+  return colors[colorIndex];
 }
 
 function startGame(people) {
@@ -21,9 +21,10 @@ function startGame(people) {
   const	angle = Math.PI * 2 / segments;
 
   for (var index = 0, limit = segments; index < limit; index ++) {
-    wheelShape.graphics.beginFill(generateHexString(people[index]))
+    var color = chooseColors(index);
+    wheelShape.graphics.beginFill(color)
       .moveTo(0, 0)
-      .lineTo(Math.cos(angle * index) * diameter, Math.sin(angle * index ) * diameter)
+      .lineTo(Math.cos(angle * index) * diameter, Math.sin(angle * index) * diameter)
       .arc(0, 0, diameter, index * angle, index * angle + angle)
       .lineTo(0, 0);
 
