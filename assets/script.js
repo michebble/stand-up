@@ -4,6 +4,25 @@ const chooseColors = function (index) {
   return colors[colorIndex];
 }
 
+function findOffset(angle, sectors) {
+  const remainder = sectors%4;
+  let offset;
+  switch(remainder) {
+    case 1:
+      offset = angle/1.3333;
+      break;
+    case 2:
+      offset = angle/remainder;
+      break;
+    case 3:
+      offset = angle/4;
+      break;
+    default:
+      offset = remainder;
+  }
+  return offset;
+}
+
 function startGame(people) {
   const stage = new createjs.Stage("canvas");
   createjs.Ticker.timingMode = createjs.Ticker.RAF;
@@ -17,15 +36,15 @@ function startGame(people) {
   // drawWheel(people, diameter)
   const wheel = new createjs.Container();
   const	wheelShape = new createjs.Shape();
-  const segments = people.length;
-  const	angle = Math.PI * 2 / segments;
+  const sectors = people.length;
+  const	angle = Math.PI * 2 / sectors;
+  for (var index = 0, limit = sectors; index < limit; index ++) {
+    const color = chooseColors(index);
+    const offset = findOffset(angle, sectors);
 
-  for (var index = 0, limit = segments; index < limit; index ++) {
-    var color = chooseColors(index);
     wheelShape.graphics.beginFill(color)
       .moveTo(0, 0)
-      .lineTo(Math.cos(angle * index) * diameter, Math.sin(angle * index) * diameter)
-      .arc(0, 0, diameter, index * angle, index * angle + angle)
+      .arc(0, 0, diameter, (index * angle + offset), (index * angle + angle + offset))
       .lineTo(0, 0);
 
     // Add text child
@@ -42,7 +61,7 @@ function startGame(people) {
   wheel.x = wheel.y = diameter + 20;
   wheel.cache(-diameter, -diameter, diameter*2, diameter*2);
 
-  wheel.rotation = -360/segments/2; // Rotate by 1/2 segment to align at 0
+  wheel.rotation = -360/sectors/2; // Rotate by 1/2 sector to align at 0
   // return wheel
 
   // drawNotch(notchX(wheel.x), notchY(wheel.y - diameter))
@@ -51,14 +70,6 @@ function startGame(people) {
   notch.y = wheel.y - diameter;
   notch.graphics.beginFill("linen").drawPolyStar(0, 0, 12, 3, 2, 90);
   //return notch
-
-  // Where the wheel should land
-  // var nextPerson = new createjs.Text("Stand-up Picker", "50px Arial", "#000")
-  // 	.set({
-  //     x: wheel.x,
-  //     y: wheel.y + diameter+10,
-  //     textAlign: "center"
-  //   });
 
   stage.addChild(wheel, notch); // and , nextPerson
 
@@ -72,7 +83,7 @@ function startGame(people) {
       wheel.mode = STOPPING;
 
       // Slow down. Find the end angle, and tween to it
-      const num = Math.random() * segments | 0; // Choose a number,
+      const num = Math.random() * sectors | 0; // Choose a number,
       const	angleR = angle * 180/Math.PI; // Angle in degrees
       const adjusted = (wheel.rotation - 360);	// Add to the current rotation
       const numRotations = Math.ceil(adjusted / 360)*360 - num*angleR - angleR/2; // Find the final number.
