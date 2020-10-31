@@ -108,11 +108,9 @@ function startGame(people) {
 function tryGetNamesFromParams() {
   const params = window.location.search;
   if (!params) { return; }
-  const urlParams = new URLSearchParams(params);
-  let names = urlParams.getAll("ns[]")
-  if (names.length === 0) { return; }
-  const namesInput = document.getElementById("namesInput");
-  namesInput.value = names.join(' ')
+  const names = new URLSearchParams(params).get("names");
+  if (!names) { return; }
+  document.getElementById("namesInput").value = names;
 }
 
 function hideSetup() {
