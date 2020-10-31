@@ -11,12 +11,22 @@
       }
       main {
         margin: auto;
-        width: 50%;
+        width: 60%;
+      }
+      .setUp {
+        display: flex;
+        flex-direction: column;
       }
     </style>
   </head>
   <body>
     <main>
+
+      <div class='setUp'>
+        <textarea id='namesInput' placeholder="Enter names separated by spaces"></textarea>
+        <button id='startButton' onclick="setUpGame()">Click to begin</button>
+      </div>
+
       <canvas id="canvas" width="520" height="600"></canvas>
     </main>
     <script src="assets/script.js"></script>
